@@ -2,6 +2,14 @@ require 'sinatra'
 
 class Test < Sinatra::Base
 
+  get "/" do
+    "
+      <h2>
+        <a href='/hello'>Hello</a>
+      </h2>
+    "
+  end
+
   get '/hello' do
     sleep 0.5
     "Hello World!"
