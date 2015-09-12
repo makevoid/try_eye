@@ -14,7 +14,7 @@ can also try on 1.9
 
     eye help
 
-    eye load thin.eye.rb -f
+    eye load config/thin.eye.rb -f
 
     # read the output, and you can now run:
 
