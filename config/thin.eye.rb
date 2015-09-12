@@ -31,3 +31,9 @@ Eye.app 'thin-farm' do
   end
 
 end
+
+
+Eye.app 'thin-loadbal' do
+  working_dir File.expand_path(File.dirname __FILE__)
+
+end

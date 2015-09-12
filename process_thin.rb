@@ -16,3 +16,7 @@ def thin(proxy, port)
                  :every => 5.seconds, :times => [2, 3], :timeout => 1.second
   end
 end
+
+def loadbal(ports)
+  start_command "#{BUNDLE} exec rackup -O trying_eye -p #{port} -P #{name}.pid"
+end
