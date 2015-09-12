@@ -7,6 +7,8 @@ class Test < Sinatra::Base
       <h2>
         <a href='/hello'>Hello</a>
       </h2>
+
+      pid: #{Process.pid}
     "
   end
 

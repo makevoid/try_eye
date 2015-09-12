@@ -7,7 +7,7 @@ def thin(proxy, port)
   proxy.process(name) do
     pid_file "#{name}.pid"
 
-    start_command "#{BUNDLE} exec rackup -O trying_eye -p #{port} -P #{name}.pid -e #{proxy.env['RACK_ENV']}"
+    start_command "#{BUNDLE} exec rackup -O trying_eye -p #{port} -P #{name}.pid"
     stop_signals [:QUIT, 2.seconds, :TERM, 1.seconds, :KILL]
 
     stdall "thin.stdall.log"
