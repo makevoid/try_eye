@@ -8,9 +8,9 @@ can also try on 1.9
 
 ### Run
 
-    gem i bundler
+    gem i bundler eye
 
-    buddle
+    bundle
 
     eye help
 
