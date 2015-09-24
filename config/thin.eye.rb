@@ -1,8 +1,24 @@
+require 'json'
+
 RUBY   = 'ruby'
 BUNDLE = 'bundle'
 
 path = File.expand_path "../../", __FILE__
 PATH = path
+
+# TODO: move in helpers
+def symbolize_keys(hash)
+  Hash[hash.map{ |key, val| [key.to_sym, val] }]
+end
+
+def load_config(path)
+  symbolize_keys JSON.parse File.read path
+end
+
+CONFIG = load_config "#{PATH}/config/thin.json"
+
+# PORTS = 5555..5560
+PORTS = CONFIG[:port_start]..CONFIG[:port_start]+CONFIG[:processes_num]
 
 Eye.load "../apps/thin_farm.rb"
 
@@ -25,7 +41,7 @@ Eye.app 'thin-farm' do
     chain action: :restart, grace: 3.seconds
     chain action: :start,   grace: 1.seconds
 
-    (5555..5560).each do |port|
+    (PORTS).each do |port|
       thin self, port
     end
   end
