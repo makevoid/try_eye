@@ -1,38 +1,46 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
+	"fmt"
+
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"math/rand"
 	"strconv"
-
-	"encoding/json"
-	"os"
-	"fmt"
 )
 
 type Configuration struct {
-	PortsFirst  int
-	PortsNum    int
+	PortStart     int `json:"port_start"`
+	ProcessesNum  int `json:"processes_num"`
 }
 
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
 
 func main() {
-
-	file, _ := os.Open("./config/thin.json")
-	decoder := json.NewDecoder(file)
+	dat, err := ioutil.ReadFile("./config/thin.json")
+	check(err)
 	configuration := Configuration{}
-	err := decoder.Decode(&configuration)
-	if err != nil { fmt.Println("error:", err) }
-	fmt.Println(configuration.PortsFirst)
-	fmt.Println(configuration.PortsNum)
 
+	json.Unmarshal([]byte(dat), &configuration)
+	fmt.Println("Config loaded:")
+	fmt.Println(configuration.PortStart)
+	fmt.Println(configuration.ProcessesNum)
 
+	var ports []int
+	ports = make([]int, configuration.ProcessesNum, configuration.ProcessesNum)
+
+	for i := 0; i <= configuration.ProcessesNum-1; i++ {
+		ports[i] = configuration.PortStart + i
+	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-
-		ports := []int{5555, 5556, 5557, 5558, 5559, 5560}
 		for i := range ports {
 				j := rand.Intn(i + 1)
 				ports[i], ports[j] = ports[j], ports[i]
@@ -46,5 +54,6 @@ func main() {
 		proxy := &httputil.ReverseProxy{Director: director}
 		go proxy.ServeHTTP(w, r)
 	})
+	fmt.Println("ReverseProxy started!")
 	log.Fatal(http.ListenAndServe(":8181", nil))
 }
